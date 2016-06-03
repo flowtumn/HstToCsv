@@ -1,0 +1,33 @@
+language: cpp
+
+compiler:
+    - clang
+    - gcc
+
+before_install:
+    - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-add-repository -y ppa:smspillaz/cmake-2.8.12; fi
+    - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get update -qq; fi
+    - if [ "$TRAVIS_OS_NAME" = "linux" ]; then sudo apt-get install -y cmake cmake-data; fi
+
+addons:
+    apt:
+        sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.7
+        packages:
+            - gcc-4.9
+            - g++-4.9
+            - clang-3.7
+
+install:
+    - if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
+    - if [ "$CXX" = "clang++" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi
+
+os:
+    - linux
+    - osx
+
+script:
+    - mkdir ./out && cd ./out
+    - cmake ../
+    - cmake --build ./
